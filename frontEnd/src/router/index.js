@@ -11,6 +11,7 @@ import courseItemList from '../views/courseinfo/courseItemList'
 import itemFileInfo from '../views/courseinfo/itemFileInfo'
 import itemFileCreate from '../views/courseinfo/itemFileCreate'
 import testInfo from '../views/courseinfo/testInfo'
+import studyWatch from '../views/courseinfo/studyWatch'
 import testAnswer from '../views/courseinfo/testAnswer'
 import messageList from '../views/message/messageList'
 import messageCreate from '../views/message/messageCreate'
@@ -105,6 +106,11 @@ var router = new Router({
           path: 'messageCreate',
           name: 'messageCreate',
           component: messageCreate
+        },
+        {
+          path: 'studyWatch',
+          name: 'studyWatch',
+          component: studyWatch
         }
       ]
     },

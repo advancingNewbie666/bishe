@@ -1,6 +1,6 @@
 <template>
   <div>
-    <TopBar :title="title"></TopBar>
+    <TopBar :showBack="false" :title="title"></TopBar>
     <div class="form">
       <el-form ref="form" :model="form" label-width="80px" :rules="rules">
         <el-form-item label="工号" readonly>
@@ -36,13 +36,16 @@
         <el-form-item v-show="false">
           <el-button type="primary" @click="submit">提交</el-button>
         </el-form-item>
+        <el-form-item>
+            <Button type="primary" @click="backLogin()">退出登录</Button>
+        </el-form-item>
       </el-form>
     </div>
   </div>
 </template>
 <style scoped>
-.form{width: 500px;margin: 0 auto;}
-.title{text-align: center;}
+/*.form{width: 500px;margin: 0 auto;}
+.title{text-align: center;}*/
 </style>
 <script>
 import TopBar from '@/views/common/TopBar.vue'
@@ -116,6 +119,10 @@ export default {
     submit: function() {
       var self = this;
       self.form=JSON.parse(localStorage.getItem('UNIFO'));
+    },
+    backLogin:function(){
+      localStorage.clear();
+      this.jump("/login")
     }
   }
 }

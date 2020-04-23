@@ -13,7 +13,7 @@ class FileInfoModel extends BaseModel{
 		this.model = super.getModel()
 		this.model.sync()
 		// 表结构关系关联，一对多关系
-		this.model.belongsTo(scheduleItem['model'], {as:'scheduleItem', foreignKey:'scheduleItemId'})
+		// this.model.belongsTo(scheduleItem['model'], {as:'scheduleItem', foreignKey:'scheduleItemId'})
 	}
 }
 module.exports = new FileInfoModel()

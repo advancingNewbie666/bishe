@@ -110,19 +110,28 @@ export default {
       var self = this;
       self.$refs['form'].validate((valid)=>{
         if(valid){
-          let data = this.form
-          self.request("api/createUser",{
-            "method":"POST",
-            "data": data,
+          self.request("api/login?userNo="+self.form.userNo,{
             "success": function(res){
-              if(res.data&&res.data.id) {
-                localStorage.setItem('UNIFO',JSON.stringify(res.data));
-                self.jump("/main/courseList");
+              if(res.data&&res.data.length>0) {
+                alert("该用户已存在");
               } else {
-                alert(res.data.data);
+                let data = self.form
+                self.request("api/createUser",{
+                  "method":"POST",
+                  "data": data,
+                  "success": function(res){
+                    if(res.data&&res.data.id) {
+                      localStorage.setItem('UNIFO',JSON.stringify(res.data));
+                      self.jump("/main/courseList");
+                    } else {
+                      alert(res.data.data);
+                    }
+                  }
+                });
               }
             }
-          });
+          })
+
         }
       })
     }

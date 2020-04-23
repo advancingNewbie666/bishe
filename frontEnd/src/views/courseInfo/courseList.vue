@@ -1,16 +1,16 @@
 <template>
   <div>
-    <TopBar :title="title" :addFlag="true" @addClick="addClick"></TopBar>
+    <TopBar :showBack="false" :title="title" :addFlag="true" @addClick="addClick"></TopBar>
     <div class="form">
       <List>
         <ListItem v-for="item in courseList" :key="item.id">
             <ListItemMeta :title="item.scheduleName" />
             <template slot="action">
                 <li>
-                    <a href="#" @click="detailInfo(item)">详情</a>
+                    <div @click="detailInfo(item)">详情</div>
                 </li>
                 <li v-if="sessionInfo.roleId==1">
-                    <a href="#" @click="deleteInfo(item)">删除</a>
+                    <div @click="deleteInfo(item)">删除</div>
                 </li>
             </template>
         </ListItem>
@@ -52,17 +52,32 @@ export default {
   methods:{
     initList: function(paramCode,selectInfo) {
       var self = this;
-      let data = "?userId="+this.sessionInfo.id+"&scheduleType=1"
-      self.request("api/schedule/find"+data,{
-        "method":"GET",
-        "success": function(res){
-          if(res.data&&res.data.length>0) {
-            self.courseList=res.data
-          } else {
-            self.courseList=[]
+      if(this.sessionInfo.roleId ==2){
+        let data = "?userId="+this.sessionInfo.id+"&scheduleType=1"
+        self.request("api/schedule/findByS"+data,{
+          "method":"GET",
+          "success": function(res){
+            if(res.data&&res.data.length>0) {
+              self.courseList=res.data
+            } else {
+              self.courseList=[]
+            }
           }
-        }
-      });
+        });
+      }else if(this.sessionInfo.roleId ==1){
+        let data = "?userId="+this.sessionInfo.id+"&scheduleType=1"
+        self.request("api/schedule/find"+data,{
+          "method":"GET",
+          "success": function(res){
+            if(res.data&&res.data.length>0) {
+              self.courseList=res.data
+            } else {
+              self.courseList=[]
+            }
+          }
+        });
+      }
+
     },
     addClick(title){
       var self = this;
@@ -88,18 +103,15 @@ export default {
         "method":"DELETE",
         "data":data,
         "success": function(res){
-          // if(res.data&&res.data.length>0) {
-          //   self.courseList=res.data
-          // } else {
-          //   self.courseList=[]
-          // }
+          if(res&&res.data>0){
+            self.initList();
+          }
         }
       });
     }
   }
 }
 </script>
-<style scoped>
-.form{width: 500px;margin: 0 auto;}
-.title{text-align: center;}
+<style>
+
 </style>

@@ -1,19 +1,13 @@
 <template>
   <div>
-    <TopBar :title="title" :addFlag="addFlag" @addClick="addClick"></TopBar>
+    <TopBar :title="title" @addClick="addClick"></TopBar>
     <div class="form">
       <List>
         <ListItem v-for="item in testList" :key="item.id">
-            <ListItemMeta :title="item.testName" />
+            <ListItemMeta :title="item.name+'--'+item.score+'分'" />
             <template slot="action">
                 <li>
                   <div @click="detailInfo(item)">详情</div>
-                </li>
-                <li>
-                  <div @click="testInfo(item)">开始考试</div>
-                </li>
-                <li v-if="addFlag">
-                  <div @click="deleteInfo(item)">删除</div>
                 </li>
             </template>
         </ListItem>
@@ -47,8 +41,7 @@ export default {
   methods:{
     initList: function() {
       var self = this;
-      let data = "?scheduleItemId="+this.scheduleItemId
-      self.request("api/test/find"+data,{
+      self.request("api/itemAndAnswer/findUserList?scheduleItemId="+this.scheduleItemId,{
         "method":"GET",
         "success": function(res){
           if(res.data&&res.data.length>0) {
@@ -117,8 +110,8 @@ export default {
       var self = this;
       if(self.addFlag){
         if(self.sessionInfo.roleId==1){
-          localStorage.setItem('testId',item.id)
-          localStorage.setItem('testType',1) // 1新建试题    2答题   3答题记录
+          localStorage.setItem('userId',item.userId)
+          localStorage.setItem('testType',3) // 1新建试题    2答题   3答题记录
           self.jump("/main/testAnswer");
         }else{
           // self.jump("/main/courseAddByS");

@@ -2,7 +2,9 @@
 	<div class="tabberWarp" >
 		<div class="warp">
 			<Item :txt='item.txt' :page='item.page' @change='getVal' v-for='item in tabbarDes' :key="item.txt" :sel='selected'>
-				<Icon type="ios-person-outline" slot="normalImg"></Icon>
+				<Icon :type="item.normalType" slot="normalImg"></Icon>
+				<!-- <Icon :type="normalType" slot="normalImg"></Icon>
+				<Icon :type="ios-person-outline" slot="normalImg"></Icon> -->
 				<!-- <img :src="item.normalImg" slot='normalImg'>
 				<img :src="item.activeImg" slot='activeImg'> -->
 			</Item>
@@ -22,19 +24,21 @@
 					{
 						txt:'课程',
 						page:'/main/courseList',
-						// normalImg:require('../assets/images/zz_07.jpg'),
+						normalType:"md-book",
 						// activeImg:require('../assets/images/22_03.jpg')
 
 					},
 					{
 						txt:'论坛',
 						page:'/main/messageList',
+						normalType:"logo-chrome",
 						// normalImg:require('../assets/images/download_skin_ic.png'),
 						// activeImg:require('../assets/images/112_26.jpg')
 					},
 					{
 						txt:'我的',
 						page:'/main/mine',
+						normalType:"ios-person-outline",
 						// normalImg:require('../assets/images/zz_09.jpg'),
 						// activeImg:require('../assets/images/icon2_03.jpg')
 					}
@@ -57,6 +61,7 @@
 		align-items: center;
 		justify-content: space-around;
 		font-size: 0;
+		background-color: #3dcccc;
 	}
 	.warp img{
 		width: 20px;
@@ -73,6 +78,9 @@
 		left: 0;
 		width: 100%;
 		padding-bottom: 5px;
-		background: #fff;
+		background-color: #3dcccc;
+	}
+	.itemWarp.flex_mid{
+		border-right: 1px #fff solid;
 	}
 </style>

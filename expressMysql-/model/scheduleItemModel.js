@@ -18,7 +18,7 @@ class ScheduleItemModel extends BaseModel{
 		this.model = super.getModel()
 		this.model.sync()
 		// 表结构关系关联，一对多关系
-		this.model.belongsTo(user['model'], {as:'user', foreignKey:'userId'})
+		// this.model.belongsTo(user['model'], {as:'user', foreignKey:'userId'})
 	}
 	// 特殊的业务方法，多表操作
 	findByS(attributes, where){

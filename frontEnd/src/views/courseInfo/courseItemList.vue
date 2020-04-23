@@ -7,14 +7,20 @@
             <ListItemMeta :title="item.scheduleItemName" />
             <template slot="action">
                 <li>
-                    <a href="#" @click="detailInfo(item)">详情</a>
+                    <div @click="detailInfo(item)">详情</div>
                 </li>
-                <li>
-                    <a href="#" @click="testInfo(item)">考试</a>
+                <li v-if="!addFlag">
+                    <div @click="testInfo(item)">考试</div>
                 </li>
                 <li v-if="addFlag">
-                    <a href="#" @click="deleteInfo(item)">删除</a>
+                    <div @click="testInfo(item)">学生考试历史</div>
                 </li>
+                <li v-if="addFlag">
+                    <div @click="createTest(item)">出题</div>
+                </li>
+                <!-- <li v-if="addFlag">
+                    <div @click="deleteInfo(item)">删除</div>
+                </li> -->
             </template>
         </ListItem>
       </List>
@@ -73,22 +79,29 @@ export default {
     },
     testInfo(item){
       localStorage.setItem('scheduleItemId',item.id)
-      this.jump("/main/testInfo")
+      localStorage.setItem('testType',2) // 1新建试题    2答题   3答题记录
+      if(this.sessionInfo.roleId==1){
+        this.jump("/main/testInfo")
+      }else{
+        this.jump("/main/testAnswer")
+      }
+    },
+    createTest(item){
+      localStorage.setItem('scheduleItemId',item.id)
+      localStorage.setItem('testType',1) // 1新建试题    2答题   3答题记录
+      this.jump("/main/testAnswer");
     },
     deleteInfo(item){
       var self = this;
       let data = {
-        id:item.id,
-        scheduleType:2
+        id:item.id
       }
       self.request("api/schedule/delete",{
         "method":"DELETE",
         "data":data,
         "success": function(res){
-          // if(res.data&&res.data.length>0) {
-          //   self.courseList=res.data
-          // } else {
-          //   self.courseList=[]
+          // if(res.data.code='0000') {
+            self.initList();
           // }
         }
       });
@@ -96,7 +109,6 @@ export default {
   }
 }
 </script>
-<style scoped>
-.form{width: 500px;margin: 0 auto;}
-.title{text-align: center;}
+<style>
+
 </style>

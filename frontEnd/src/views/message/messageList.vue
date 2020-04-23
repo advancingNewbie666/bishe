@@ -1,19 +1,19 @@
 <template>
   <div data-messagelist-box>
-    <TopBar :title="title" :addFlag="true" @addClick="addClick"></TopBar>
-    <div class="form">
+    <TopBar :showBack="false" :title="title" :addFlag="true" @addClick="addClick"></TopBar>
+    <div class="form" v-if="ifShow">
       <div v-for="item in messageList" :key="item.messageId" class="message_each_div">
-        <div class="message_each_top"><span class="user_name_span">{{item.userName}}</span><span>{{item.messageInfo}}</span></div>
-        <div class="message_each_bottom"><span @click="showBackInput(item)">评论</span></div>
-        <div class="back_div" v-if="item.backList&&item.backList.length>0">
-          <div class="back_each_div" v-for="backItem in item.backList" :key="item.backId">
+        <div class="message_each_top"><span class="user_name_span">{{item.name}}</span><span>{{item.messageInfo}}</span></div>
+        <div class="message_each_bottom"><div v-if="false" class="timeclass">{{item.createdAt}}</div><div @click="showBackInput(item)">评论</div></div>
+        <div class="back_div" v-show="item.backList&&item.backList.length>0">
+          <div class="back_each_div" v-for="(backItem,backIndex) in item.backList" :key="backIndex">
             <div v-if="backItem.isAdd">
               <span>{{backItem.userName}}:</span>
-              <el-input v-model="backItem.backInfo" style="width: 70%;" size="mini"></el-input>
+              <el-input v-model="backAddInfo" style="width: 70%;" size="mini"></el-input>
               <el-button type="primary" size="mini" @click="submit(backItem,item)">提交</el-button>
             </div>
             <div v-else>
-              <span>{{backItem.userName}}:</span>
+              <span>{{backItem.name}}:</span>
               <span>{{backItem.backInfo}}</span>
             </div>
           </div>
@@ -31,34 +31,10 @@ export default {
   name: 'messageList',
   data () {
   	return{
-      messageList:[{
-        messageId:1,
-        userId:1,
-        userName:'肖战',
-        messageInfo:'我今天想早点睡觉',
-        backList:[{
-          backId:1,
-          userId:2,
-          userName:'王一博',
-          backInfo:'我允许了',
-        },{
-          backId:2,
-          userId:3,
-          userName:'孟美岐',
-          backInfo:'累了吗',
-        }]
-      },{
-        messageId:2,
-        userId:2,
-        userName:'王一博',
-        messageInfo:'不想说话',
-      },{
-        messageId:3,
-        userId:4,
-        userName:'大美女',
-        messageInfo:'呼哈哈哈哈啊哈哈哈哈',
-      }],
-      title:'论坛'
+      messageList:[],
+      title:'论坛',
+      ifShow:false,
+      backAddInfo:''
     }
   },
   created: function() {
@@ -76,11 +52,17 @@ export default {
           self.messageList = res.data;
           if(res.data&&res.data.length>0) {
             self.messageList = res.data;
-            self.messageList.forEach((item)=>{
-              self.request("api/back/find?messageId="+item.id,{
+            self.messageList.forEach((item,index)=>{
+              self.request("api/backInfo/find?messageId="+item.id,{
                 "method":"GET",
                 "success": function(res){
                   item.backList=res.data;
+                  if(index==self.messageList.length-1){
+                    self.$nextTick(()=>{
+                      self.ifShow = true;
+                    })
+                  }
+                  // item.backList=[{backInfo:'123',isAdd:true,userName:self.sessionInfo.name}]
                 }
               })
             })
@@ -96,25 +78,30 @@ export default {
 
     },
     showBackInput(item){
+      this.ifShow = false;
       if(item.backList){
-        if(item.backList.length==0||item.backList[item.backList.length-1].backId){
+        if(item.backList.length==0||item.backList[item.backList.length-1].id){
           item.backList.push({backInfo:'',isAdd:true,userName:this.sessionInfo.name})
         }
       }
+      this.ifShow=true;
     },
     submit(backItem,item){
       var self = this;
-      if(backItem.backInfo.trim()!=''){
+      self.ifShow=false;
+      if(self.backAddInfo.trim()!=''){
         let data = {
           messageId:item.id,
-          backInfo:backItem.backInfo,
-          userId:this.sessionInfo.id
+          backInfo:self.backAddInfo,
+          userId:self.sessionInfo.id
         }
         self.request("api/back/create",{
           "method":"POST",
           "data":data,
           "success": function(res){
-            item.backList[item.backList.length-1]=res.data;
+            self.$nextTick(()=>{
+              self.initList();
+            })
           }
         })
       }
@@ -152,6 +139,11 @@ export default {
   }
   .message_each_bottom{
     text-align: right;
+    /*display: flex;
+    justify-content: space-between;*/
+  }
+  .timeclass{
+        color: #c3b4b4;
   }
   .message_each_div .back_div{
     width: 80%;

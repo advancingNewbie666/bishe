@@ -11,7 +11,7 @@ app.set('json spaces', 2)
 app.use(logger('dev'))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
-app.use(multipart())
+// app.use(multipart())
 app.use(compression())
 app.use(cookieParser())
 app.use('/public', express.static('public'))
@@ -28,6 +28,7 @@ app.all('*',function(req,res,next){
 app.use('/person', require('./routes/personCtrl'))
 app.use('/company', require('./routes/companyCtrl'))
 app.use('/api', require('./routes/commonCtrl'))
+
 // 错误处理中间件
 app.use(function(req, res, next) {
   let err = new Error('Not Found')

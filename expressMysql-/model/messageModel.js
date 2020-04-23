@@ -12,7 +12,7 @@ class MessageModel extends BaseModel{
 		this.model = super.getModel()
 		this.model.sync()
 		// 表结构关系关联，一对多关系
-		this.model.belongsTo(user['model'], {as:'user', foreignKey:'userId'})
+		// this.model.belongsTo(user['model'], {as:'user', foreignKey:'userId'})
 	}
 }
 module.exports = new MessageModel()
